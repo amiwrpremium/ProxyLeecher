@@ -1,7 +1,8 @@
 import requests
 import threading
-import time
 from os import system
+from prettytable import PrettyTable
+from termcolor import colored
 
 system('clear')
 client_thread = int(input("Threads: "))
@@ -26,7 +27,7 @@ class MainApp(threading.Thread):
         threading.Thread.__init__(self)
         self.tasks = []
         self.text = True
-        self.line_split = nice
+        self.line_split = open_file()
         self.file_path = None
 
     def run(self):
@@ -97,18 +98,22 @@ class MainApp(threading.Thread):
                 else:
                     print('No Proxy')
 
+        print(f"\n\n\n\n\n\t\t  HI  1   \t\t\n\n\n\n\n")
+
 
 def result():
-    print(f"\033[91m\n\nResult:\033[0m\n\n\n"
-          f"\033[35mChecked\t : \t{total_checked}\n"
-          f"\033[35mValid\t : \t{valid}\n"
-          f"\033[35mInvalids\t : \t{invalid}\n")
+    table = PrettyTable()
+    table.title = colored('Result', 'blue')
+    table.field_names = ['Info', 'Count']
+    table.add_row([colored('Good', 'green'), colored(str(valid), 'green')])
+    table.add_row([colored('Bad', 'red'), colored(str(invalid), 'red')])
+    table.add_row([colored('Total', 'cyan'), colored(str(total_checked), 'cyan')])
+    print(table)
 
 
 if __name__ == '__main__':
     try:
         global nice
-        nice = open_file()
 
         threads = []
         for z in range(client_thread):
@@ -118,8 +123,10 @@ if __name__ == '__main__':
             thread.start()
         for thread in threads:
             thread.join()
+
+        print('\n\nFinished\nValid proxies saved in good.txt\033[39m\n\n')
         result()
 
     except KeyboardInterrupt:
-        print('\n\n\033[91mExiting...')
+        print('\n\n\033[91mExiting...\nValid proxies saved in good.txt\033[39m\n\n')
         result()
