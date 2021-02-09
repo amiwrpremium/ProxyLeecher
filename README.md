@@ -2,6 +2,7 @@
 A free, easy to use proxy leecher and proxy checker that use multiple sources to get you free proxy in {ip:port} format, and help you check your proxies.
 <br>
 <hr>
+
 # Requirements
 This script requires below package to work:<br>
 requests<br>
@@ -19,6 +20,7 @@ Or install them all with:<br>
 
 <br>
 <hr>
+
 # Usage
 <h3>Get new proxies</h3>
 To start leeching new proxies, use:<br>
