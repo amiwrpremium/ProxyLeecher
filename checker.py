@@ -6,20 +6,31 @@ from termcolor import colored
 
 system('clear')
 client_thread = int(input("Threads: "))
+
+if client_thread <= 0:
+    print("Are you shitting me?")
+    exit(0)
+
 path = str(input('Path To Proxy File To Check: '))
+if '.txt' not in path:
+    path = f'{path}.txt'
 system('clear')
 
 
 def open_file():
-    with open(path, 'r') as f:
-        text = f.read()
+    try:
+        with open(path, 'r') as f:
+            text = f.read()
 
-    line_split = text.split('\n')
-    total = len(line_split)
+        line_split = text.split('\n')
+        total = len(line_split)
 
-    print(f"\033[94mLoaded {total} proxies\n\n")
+        print(f"\033[94mLoaded {total} proxies\n\n\033[39m")
+        return line_split
 
-    return line_split
+    except FileNotFoundError:
+        print(colored(f"Error!\n{path} Not Found\n\nExiting", 'red'))
+        exit(0)
 
 
 class MainApp(threading.Thread):
@@ -27,7 +38,7 @@ class MainApp(threading.Thread):
         threading.Thread.__init__(self)
         self.tasks = []
         self.text = True
-        self.line_split = open_file()
+        self.line_split = nice
         self.file_path = None
 
     def run(self):
@@ -51,12 +62,12 @@ class MainApp(threading.Thread):
                 x = current.replace("\r", "")
 
                 if x:
-                    print(f'\033[0m[{x}]\t ~> \tProxy checking...')
+                    print(f'\n\033[0m[{x}]\t ~> \tProxy checking...\033[39m', end='')
 
                     try:
                         requests.get("http://ipinfo.io/json", proxies={'http': 'http://' + x}, timeout=5)
 
-                        print(f'\033[92m[{x}]\t ~> \tProxy valid!')
+                        print(f'\n\033[92m[{x}]\t ~> \tProxy valid!\033[39m', end='')
 
                         f = open('good.txt', 'a')
                         f.write(f"\n{x}")
@@ -66,39 +77,37 @@ class MainApp(threading.Thread):
                         total_checked += 1
 
                     except requests.exceptions.ConnectTimeout:
-                        print(f'\033[91m[{x}]\t ~> \tConnect timeout!')
+                        print(f'\n\033[91m[{x}]\t ~> \tConnect timeout!\033[39m', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                     except requests.exceptions.ConnectionError:
-                        print(f'\033[91m[{x}]\t ~> \tConnection error!')
+                        print(f'\n\033[91m[{x}]\t ~> \tConnection error!\033[39m', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                     except requests.exceptions.HTTPError:
-                        print(f'\033[91m[{x}]\t ~> \tHTTP error!')
+                        print(f'\n\033[91m[{x}]\t ~> \tHTTP error!\033[39m', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                     except requests.exceptions.Timeout:
-                        print(f'\033[91m[{x}]\t ~> \tTimeout error!')
+                        print(f'\n\033[91m[{x}]\t ~> \tTimeout error!\033[39m', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                     except requests.exceptions.TooManyRedirects:
-                        print(f'\033[91m[{x}]\t ~> \tToo many redirects!')
+                        print(f'\n\033[91m[{x}]\t ~> \tToo many redirects\033[39m!', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                     except Exception as e:
-                        print(f'\033[91m[{x}]\t ~> \tUnknown error!\n{e}')
+                        print(f'\n\033[91m[{x}]\t ~> \tUnknown error!\033[39m\n{e}', end='')
                         invalid += 1
                         total_checked += 1
                         continue
                 else:
                     print('No Proxy')
-
-        print(f"\n\n\n\n\n\t\t  HI  1   \t\t\n\n\n\n\n")
 
 
 def result():
@@ -108,12 +117,16 @@ def result():
     table.add_row([colored('Good', 'green'), colored(str(valid), 'green')])
     table.add_row([colored('Bad', 'red'), colored(str(invalid), 'red')])
     table.add_row([colored('Total', 'cyan'), colored(str(total_checked), 'cyan')])
-    print(table)
+    try:
+        print(table)
+    except Exception as e:
+        print(colored(f"Error!\n{e}\n\nCouldn't Print Result Table\n", 'red'))
 
 
 if __name__ == '__main__':
     try:
         global nice
+        nice = open_file()
 
         threads = []
         for z in range(client_thread):
