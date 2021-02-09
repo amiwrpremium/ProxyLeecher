@@ -34,5 +34,5 @@ It will make a file named _'proxy.txt'_ in your current directory
 To start checking proxies, use:<br>
 <code>python3 checker.py</code>
 
-###### It will make a file named _'good.txt'_ in your current directory
+It will make a file named _'good.txt'_ in your current directory
 
