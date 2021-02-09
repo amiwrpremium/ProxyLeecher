@@ -1,6 +1,7 @@
 # ProxyLeecher
 A free, easy to use proxy leecher and proxy checker that use multiple sources to get you free proxy in {ip:port} format, and help you check your proxies.
 <br>
+<br>
 <hr>
 
 # Requirements
@@ -18,6 +19,7 @@ You can install them via:<br>
 Or install them all with:<br>
 <code>python3 -m pip install -r requirements.txt</code>
 
+<br>
 <br>
 <hr>
 
